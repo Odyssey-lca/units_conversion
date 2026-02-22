@@ -1,0 +1,17 @@
+WHITESPACE = _{ " " }
+
+num_atom      = @{ (ASCII_DIGIT)+ }
+alphanum      = @{ ASCII_ALPHANUMERIC | "µ" }
+alphanum_atom = @{ (alphanum | (alphanum ~ WHITESPACE ~ alphanum))+ }
+paren_atom    =  { "(" ~ expr ~ ")" }
+atom          = _{ num_atom | alphanum_atom | paren_atom }
+
+bin_op   = _{ multiply | divide | exponent }
+multiply =  { "*" | "." }
+divide   =  { "/" }
+exponent =  { "^" }
+
+expr = { atom ~ (bin_op ~ atom)* }
+
+// We can't have SOI and EOI on expr directly, because it is used recursively (e.g. with parentheses)
+unit = _{ SOI ~ expr ~ EOI }
