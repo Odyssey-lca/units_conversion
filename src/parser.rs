@@ -102,6 +102,21 @@ fn unit_of_expr(expr: Expr, exponent: i32) -> Option<Unit> {
     }
 }
 
+/// Parses a string slice to extract a physical unit.
+///
+/// # Examples
+/// 
+/// ```
+/// use units_conversion::parser::parse_unit;
+/// 
+/// let input = "m/s";
+/// 
+/// if let Some(unit) = parse_unit(input) {
+///     assert_eq!(unit.dimension.length, 1);
+///     assert_eq!(unit.dimension.time, -1);
+///     assert_eq!(unit.scale_to_si, 1.0);
+/// }
+/// ```
 pub fn parse_unit(expr: &str) -> Option<Unit> {
     match UnitParser::parse(Rule::unit, expr) {
         Ok(mut pairs) => {
