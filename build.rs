@@ -23,8 +23,8 @@ const UNITS: [Unit; 10] = [
   Unit {symbol: "m2", dimension: "AREA",   scale_to_si: 1.,    pow: 2}, // Meter square
   Unit {symbol: "m3", dimension: "VOLUME", scale_to_si: 1.,    pow: 3}, // Cube meter
   Unit {symbol: "Sm3", dimension: "VOLUME", scale_to_si: 1.,    pow: 3}, // Cube meter
-  Unit {symbol: "l",  dimension: "VOLUME", scale_to_si: 1e-3,  pow: 3}, // Liter
-  Unit {symbol: "L",  dimension: "VOLUME", scale_to_si: 1e-3,  pow: 3}, // Liter
+  Unit {symbol: "l",  dimension: "VOLUME", scale_to_si: 1e-3,  pow: 1}, // Liter
+  Unit {symbol: "L",  dimension: "VOLUME", scale_to_si: 1e-3,  pow: 1}, // Liter
   Unit {symbol: "J",  dimension: "ENERGY", scale_to_si: 1.,    pow: 1}, // Joule
   Unit {symbol: "Wh", dimension: "ENERGY", scale_to_si: 3600., pow: 1}, // Watt hour
 ];
