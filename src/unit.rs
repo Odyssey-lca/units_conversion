@@ -6,7 +6,7 @@ use crate::dimension::*;
 
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
 pub struct Unit {
     pub dimension: Dimension,
     pub scale_to_si: f64,
