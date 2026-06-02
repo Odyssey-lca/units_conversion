@@ -70,14 +70,14 @@ fn main() {
         unit_map.entry(
             unit.symbol.to_string(),
             format!(
-                "Unit {{ dimension: {}, scale_to_si: {:e} }}",
+                "Unit {{ dimension: {}, scale_to_si: {:e}, substance: None }}",
                 unit.dimension, unit.scale_to_si
             ),
         );
         for pre in PREFIXES {
             let key = format!("{}{}", pre.symbol, unit.symbol);
             let val = format!(
-                "Unit {{ dimension: {}, scale_to_si: {:e} }}",
+                "Unit {{ dimension: {}, scale_to_si: {:e}, substance: None }}",
                 unit.dimension,
                 unit.scale_to_si * (pre.scale.powi(unit.pow))
             );
@@ -89,7 +89,7 @@ fn main() {
         unit_map.entry(
             unit.symbol.to_string(),
             format!(
-                "Unit {{ dimension: {}, scale_to_si: {:e} }}",
+                "Unit {{ dimension: {}, scale_to_si: {:e}, substance: None }}",
                 unit.dimension, unit.scale_to_si
             ),
         );

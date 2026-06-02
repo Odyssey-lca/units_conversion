@@ -1,10 +1,13 @@
 WHITESPACE = _{ " " }
 
 num_atom      = @{ (ASCII_DIGIT)+ }
-alphanum      = @{ ASCII_ALPHANUMERIC | "µ" }
-alphanum_atom = @{ (alphanum | (alphanum ~ WHITESPACE ~ alphanum))+ }
+unit_symbol   = @{ (ASCII_ALPHANUMERIC | "µ")+ }
+substance     = @{ (ASCII_ALPHANUMERIC)+ }
+
+qualified_unit = { unit_symbol ~ substance? }
+
 paren_atom    =  { "(" ~ expr ~ ")" }
-atom          = _{ num_atom | alphanum_atom | paren_atom }
+atom          = _{ num_atom | qualified_unit | paren_atom }
 
 bin_op   = _{ multiply | divide | exponent }
 multiply =  { "*" | "." }
