@@ -87,5 +87,5 @@ pub const AREA: Dimension = LENGTH.pow(2);
 pub const VOLUME: Dimension = LENGTH.pow(3);
 pub const VELOCITY: Dimension = LENGTH.div(TIME);
 pub const ACCELERATION: Dimension = MASS.div(TIME.pow(2));
-pub const ENERGY: Dimension = MASS.div(VELOCITY.pow(2));
+pub const ENERGY: Dimension = MASS.mul(VELOCITY.pow(2));
 pub const POWER: Dimension = ENERGY.div(TIME);

@@ -57,11 +57,11 @@ impl fmt::Display for Unit {
         write!(
             f,
             "{};{};{};{};{};{}",
-            self.dimension.time,
-            self.dimension.mass,
             self.dimension.length,
-            self.dimension.temperature,
+            self.dimension.mass,
+            self.dimension.time,
             self.dimension.current,
+            self.dimension.temperature,
             self.dimension.amount,
         )
     }
