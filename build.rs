@@ -48,7 +48,7 @@ const ADDITIONAL_UNITS: [Unit; 13] = [
   Unit {symbol: "ha",   dimension: "AREA", scale_to_si: 10_000.,     pow: 2},
 
   // new
-  Unit {symbol: "hp",   dimension: "POWER", scale_to_si: 745.7,      pow: 1 }, // Horsepower imperial
+  Unit {symbol: "hp",   dimension: "POWER", scale_to_si: 745.699872, pow: 1 }, // Horsepower imperial
   Unit {symbol: "K",    dimension: "TEMPERATURE", scale_to_si: 1.,   pow: 1}, // Kelvin
 ];
 
