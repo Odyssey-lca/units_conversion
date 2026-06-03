@@ -2,7 +2,7 @@ WHITESPACE = _{ " " }
 
 num_atom      = @{ (ASCII_DIGIT)+ }
 unit_symbol   = @{ (ASCII_ALPHANUMERIC | "µ")+ }
-substance     = @{ (ASCII_ALPHANUMERIC)+ }
+substance     = @{ (ASCII_ALPHANUMERIC | "-")+ }
 
 qualified_unit = { unit_symbol ~ substance? }
 
