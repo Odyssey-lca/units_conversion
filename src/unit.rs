@@ -56,10 +56,18 @@ impl std::ops::Mul for Unit {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
+
+        let substance = match (self.substance, rhs.substance) {
+            (Some(s_lhs), Some(s_rhs)) => Some(format!("{}*{}", s_lhs, s_rhs)),
+            (Some(s_lhs), None) => Some(s_lhs),
+            (None, Some(s_rhs)) => Some(s_rhs),
+            (None, None) => None,
+        };
+
         Self {
             scale_to_si: self.scale_to_si * rhs.scale_to_si,
             dimension: self.dimension * rhs.dimension,
-            substance: self.substance.or(rhs.substance),
+            substance,
         }
     }
 }
