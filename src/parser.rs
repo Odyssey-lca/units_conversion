@@ -32,7 +32,8 @@ lazy_static::lazy_static! {
         use Rule::*;
 
         PrattParser::new()
-            .op(Op::infix(multiply, Left) | Op::infix(divide, Left) | Op::infix(exponent, Left))
+            .op(Op::infix(multiply, Left) | Op::infix(divide, Left))
+            .op(Op::infix(exponent, Left))
     };
 }
 
