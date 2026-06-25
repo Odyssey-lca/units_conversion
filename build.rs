@@ -27,8 +27,6 @@ const UNITS: [Unit; 12] = [
   Unit {symbol: "L",  dimension: "VOLUME", scale_to_si: 1e-3,  pow: 1}, // Liter
   Unit {symbol: "J",  dimension: "ENERGY", scale_to_si: 1.,    pow: 1}, // Joule
   Unit {symbol: "Wh", dimension: "ENERGY", scale_to_si: 3600., pow: 1}, // Watt hour
-
-  // new
   Unit {symbol: "W",  dimension: "POWER",  scale_to_si: 1.,    pow: 1 }, // Watt
   Unit {symbol: "cal", dimension: "ENERGY", scale_to_si: 4.184,pow: 1 }, // Calorie
 ];
@@ -46,8 +44,6 @@ const ADDITIONAL_UNITS: [Unit; 13] = [
   Unit {symbol: "year", dimension: "TIME", scale_to_si: 31_556_952., pow: 1},
   Unit {symbol: "yr",   dimension: "TIME", scale_to_si: 31_556_952., pow: 1},
   Unit {symbol: "ha",   dimension: "AREA", scale_to_si: 10_000.,     pow: 2},
-
-  // new
   Unit {symbol: "hp",   dimension: "POWER", scale_to_si: 745.699872, pow: 1 }, // Horsepower imperial
   Unit {symbol: "K",    dimension: "TEMPERATURE", scale_to_si: 1.,   pow: 1}, // Kelvin
 ];
