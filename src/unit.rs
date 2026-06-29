@@ -6,13 +6,33 @@ use crate::dimension::*;
 
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
 pub struct Unit {
     pub dimension: Dimension,
     pub scale_to_si: f64,
 }
 
 impl Unit {
+
+    /// Converts the current unit into another target unit, if their physical dimensions match.
+    ///
+    /// # Examples
+    /// 
+    /// ```
+    /// use units_conversion::parser::parse_unit;
+    /// 
+    /// let hour = parse_unit("h").unwrap();
+    /// let second = parse_unit("s").unwrap();
+    /// 
+    /// // Successful conversion (same dimensions)
+    /// if let Some(converted) = hour.convert(&second) {
+    ///     assert_eq!(converted.scale_to_si, 3600.0);
+    /// }
+    /// 
+    /// // Failed conversion (different dimensions: time to length)
+    /// let meter = parse_unit("m").unwrap();
+    /// assert!(hour.convert(&meter).is_none());
+    /// ```
     pub fn convert(self, to: &Unit) -> Option<Unit> {
         if self.dimension == to.dimension {
             let scale_to_si = self.scale_to_si / to.scale_to_si;
