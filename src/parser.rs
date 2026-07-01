@@ -5,7 +5,7 @@ use crate::unit::{UNITS, Unit};
 
 #[derive(Debug)]
 pub enum Expr {
-    Atom(String),
+    Atom { symbol: String, substance: Option<String> },
     Num(i32),
     Paren(Box<Expr>),
     BinOp {
@@ -32,7 +32,8 @@ lazy_static::lazy_static! {
         use Rule::*;
 
         PrattParser::new()
-            .op(Op::infix(multiply, Right) | Op::infix(divide, Right) | Op::infix(exponent, Left))
+            .op(Op::infix(multiply, Left) | Op::infix(divide, Left))
+            .op(Op::infix(exponent, Left))
     };
 }
 
@@ -40,7 +41,12 @@ pub fn parse_expr(pairs: Pairs<Rule>) -> Expr {
     PRATT_PARSER
         .map_primary(|primary| match primary.as_rule() {
             Rule::num_atom => Expr::Num(primary.as_str().parse::<i32>().unwrap()),
-            Rule::alphanum_atom => Expr::Atom(primary.as_str().to_string()),
+            Rule::qualified_unit => {
+                let mut inner = primary.into_inner();
+                let symbol = inner.next().unwrap().as_str().to_string();
+                let substance = inner.next().map(|s| s.as_str().to_string());
+                Expr::Atom { symbol, substance }
+            }
             Rule::paren_atom => Expr::Paren(Box::new(parse_expr(primary.into_inner()))),
             Rule::expr => parse_expr(primary.into_inner()),
             rule => unreachable!("Expr::parse expected atom, found {:?}", rule),
@@ -76,10 +82,10 @@ fn unit_of_binop(lhs: Expr, op: Op, rhs: Expr, exponent: i32) -> Option<Unit> {
         }
         Op::Divide => {
             let lhs = unit_of_expr(lhs, exponent);
-            let exponent = -exponent.abs(); // Ensures that a/b/c = a/(bc)
+            //let exponent = -exponent.abs(); // Ensures that a/b/c = a/(bc)
             let rhs = unit_of_expr(rhs, exponent);
             match (lhs, rhs) {
-                (Some(lhs), Some(rhs)) => Some(lhs * rhs),
+                (Some(lhs), Some(rhs)) => Some(lhs / rhs),
                 (_, _) => None,
             }
         }
@@ -95,7 +101,13 @@ fn unit_of_binop(lhs: Expr, op: Op, rhs: Expr, exponent: i32) -> Option<Unit> {
 
 fn unit_of_expr(expr: Expr, exponent: i32) -> Option<Unit> {
     match expr {
-        Expr::Atom(unit) => UNITS.get(&unit).copied().map(|u| u.pow(exponent)),
+        Expr::Atom { symbol, substance } => {
+            UNITS.get(symbol.as_str()).cloned().map(|u| {
+                let mut unit = u.pow(exponent);
+                unit.substance = substance; 
+                unit
+            })
+        }
         Expr::BinOp { lhs, op, rhs } => unit_of_binop(*lhs, op, *rhs, exponent),
         Expr::Paren(expr) => unit_of_expr(*expr, 1).map(|u| u.pow(exponent)), // Ensures that a/(b/c) = ac/b
         Expr::Num(_) => unreachable!("Num should be parsed elswhere"),

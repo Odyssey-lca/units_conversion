@@ -6,14 +6,14 @@ use crate::dimension::*;
 
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
-#[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Unit {
     pub dimension: Dimension,
     pub scale_to_si: f64,
+    pub substance: Option<String>,
 }
 
 impl Unit {
-
     /// Converts the current unit into another target unit, if their physical dimensions match.
     ///
     /// # Examples
@@ -33,11 +33,12 @@ impl Unit {
     /// let meter = parse_unit("m").unwrap();
     /// assert!(hour.convert(&meter).is_none());
     /// ```
-    pub fn convert(self, to: &Unit) -> Option<Unit> {
-        if self.dimension == to.dimension {
+    pub fn convert(&self, to: &Unit) -> Option<Unit> {
+        if self.dimension == to.dimension && self.substance == to.substance {
             let scale_to_si = self.scale_to_si / to.scale_to_si;
             let dimension = self.dimension;
-            Some(Unit { dimension, scale_to_si })
+            let substance = self.substance.clone();
+            Some(Unit { dimension, scale_to_si, substance })
         } else {
             None
         }
@@ -46,7 +47,8 @@ impl Unit {
     pub fn pow(&self, exp: i32) -> Unit {
         let scale_to_si = self.scale_to_si.powi(exp);
         let dimension = self.dimension.pow(exp);
-        Unit { dimension, scale_to_si }
+        let substance = self.substance.clone();
+        Unit { dimension, scale_to_si, substance }
     }
 }
 
@@ -54,9 +56,18 @@ impl std::ops::Mul for Unit {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
+
+        let substance = match (self.substance, rhs.substance) {
+            (Some(s_lhs), Some(s_rhs)) => Some(format!("{}*{}", s_lhs, s_rhs)),
+            (Some(s_lhs), None) => Some(s_lhs),
+            (None, Some(s_rhs)) => Some(s_rhs),
+            (None, None) => None,
+        };
+
         Self {
             scale_to_si: self.scale_to_si * rhs.scale_to_si,
             dimension: self.dimension * rhs.dimension,
+            substance,
         }
     }
 }
@@ -65,9 +76,18 @@ impl std::ops::Div for Unit {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self {
+
+        let substance = match (self.substance, rhs.substance) {
+            (Some(s_lhs), Some(s_rhs)) => Some(format!("{}/{}", s_lhs, s_rhs)),
+            (Some(s_lhs), None) => Some(s_lhs),
+            (None, Some(s_rhs)) => Some(format!("1/{}", s_rhs)),
+            (None, None) => None,
+        };
+
         Self {
             scale_to_si: self.scale_to_si / rhs.scale_to_si,
             dimension: self.dimension / rhs.dimension,
+            substance,
         }
     }
 }
@@ -76,13 +96,15 @@ impl fmt::Display for Unit {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{};{};{};{};{};{}",
+            "Dimension : {};{};{};{};{};{}, Scale_to_si : {}, substance : {:?}",
             self.dimension.length,
             self.dimension.mass,
             self.dimension.time,
             self.dimension.current,
             self.dimension.temperature,
             self.dimension.amount,
+            self.scale_to_si,
+            self.substance,
         )
     }
 }
