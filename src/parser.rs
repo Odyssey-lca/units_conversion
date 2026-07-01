@@ -82,10 +82,10 @@ fn unit_of_binop(lhs: Expr, op: Op, rhs: Expr, exponent: i32) -> Option<Unit> {
         }
         Op::Divide => {
             let lhs = unit_of_expr(lhs, exponent);
-            //let exponent = -exponent.abs(); // Ensures that a/b/c = a/(bc)
+            let exponent = -exponent.abs(); // Ensures that a/b/c = a/(bc)
             let rhs = unit_of_expr(rhs, exponent);
             match (lhs, rhs) {
-                (Some(lhs), Some(rhs)) => Some(lhs / rhs),
+                (Some(lhs), Some(rhs)) => Some(lhs * rhs),
                 (_, _) => None,
             }
         }
